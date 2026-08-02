@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """
 Layer 7 — the latency demonstration.
 

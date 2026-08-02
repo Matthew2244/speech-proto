@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """
 Layer 5c — provisional changes that undo themselves.
 

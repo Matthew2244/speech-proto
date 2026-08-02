@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """
 macOS `say` engine — good voice, bad latency, kept honest by a warm pool.
 

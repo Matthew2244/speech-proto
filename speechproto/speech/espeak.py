@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """
 espeak-ng engine — PCM to stdout, played through our own audio sink.
 

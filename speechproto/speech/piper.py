@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """
 Piper engine — neural voices, MIT licensed, fast enough.
 

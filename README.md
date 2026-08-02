@@ -134,15 +134,16 @@ Python 3.11+, macOS or Linux. `numpy` and `sounddevice` only.
 
 ```bash
 python3 -m venv .venv
-./.venv/bin/pip install numpy sounddevice
+./.venv/bin/pip install -r requirements.txt
 ./run
 ```
 
-Optional, and worth having:
+You also need at least one speech engine. Either or both:
 
 ```bash
-brew install espeak-ng                  # or apt install espeak-ng
-./.venv/bin/pip install piper-tts       # then put a voice in ./voices/
+brew install espeak-ng                       # or: apt install espeak-ng
+./.venv/bin/pip install -r requirements-piper.txt
+cd voices && ../.venv/bin/python -m piper.download_voices en_US-lessac-medium
 ```
 
 Useful flags: `--device "name"`, `--engine espeak|piper|say`, `--rate 400`,

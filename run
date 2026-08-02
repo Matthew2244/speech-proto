@@ -1,4 +1,17 @@
 #!/bin/sh
-# Launcher — uses the project venv so you never have to think about it.
-cd "$(dirname "$0")"
+# Launcher. Uses the project venv so you never have to think about it.
+cd "$(dirname "$0")" || exit 1
+
+if [ ! -x ./.venv/bin/python ]; then
+    echo "No virtual environment found. Set one up first:" >&2
+    echo >&2
+    echo "    python3 -m venv .venv" >&2
+    echo "    ./.venv/bin/pip install -r requirements.txt" >&2
+    echo >&2
+    echo "Then run this again. For a speech engine you will also want one of:" >&2
+    echo "    brew install espeak-ng          # or: apt install espeak-ng" >&2
+    echo "    ./.venv/bin/pip install -r requirements-piper.txt" >&2
+    exit 1
+fi
+
 exec ./.venv/bin/python proto.py "$@"

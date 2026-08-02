@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """
 Layer 8 — text entry without a screen.
 

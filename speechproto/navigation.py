@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """
 Layer 5a — focus tracking.
 

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """
 Hands-free audition — hear step 1 without knowing a single keystroke.
 

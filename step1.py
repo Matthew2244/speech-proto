@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
 """
 Step 1 harness — speech engine layer, output routing, and interruption.
 

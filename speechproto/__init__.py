@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 """
 Speech Interaction Prototype — a demonstration of what speech feedback should
 feel like on a hardware music workstation.

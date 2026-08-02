@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
 """
 Print the parameter tree — as an outline, or as JSON.
 
@@ -61,7 +62,15 @@ def main() -> int:
     ap.add_argument("--count", action="store_true", help="print sizes and exit")
     args = ap.parse_args()
 
-    modes = build_instrument(["Mac Studio Speakers", "StudioLive 64S", "System Default"])
+    # Real devices where we can get them, so the Accessibility submenu shows
+    # something meaningful; a placeholder otherwise, so this works headless and
+    # in CI.
+    try:
+        from speechproto import audio_out
+        devices = [d.name for d in audio_out.list_output_devices()] or ["System Default"]
+    except Exception:
+        devices = ["System Default"]
+    modes = build_instrument(devices)
     if args.mode:
         wanted = args.mode.strip().lower()
         modes = [m for m in modes if m.name.lower() == wanted]
