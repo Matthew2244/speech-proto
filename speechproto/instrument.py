@@ -24,7 +24,7 @@ else, including before speech is switched on.
 
 from __future__ import annotations
 
-from .strings import LANGUAGES
+from .strings import available_languages
 from .params import (
     Continuous,
     Node,
@@ -249,7 +249,8 @@ def set_list_mode() -> Node:
 
 def accessibility_menu(device_names: list[str] | None = None,
                        voices: list[str] | None = None,
-                       pairs: list[str] | None = None) -> Node:
+                       pairs: list[str] | None = None,
+                       languages: list[str] | None = None) -> Node:
     """
     The speech settings, as ordinary parameters in the ordinary tree.
 
@@ -272,7 +273,7 @@ def accessibility_menu(device_names: list[str] | None = None,
     """
     devices = device_names or ["System Default"]
     return Node("Accessibility", [
-        Stepped("Language", LANGUAGES, index=0),
+        Stepped("Language", languages or available_languages(), index=0),
         Toggle("Speech", True),
         Stepped("Verbosity", VERBOSITY_LEVELS, index=1),            # Normal
         Continuous("Speech Rate", 300, 80, 450, step=10, unit="words per minute"),
@@ -295,12 +296,13 @@ def accessibility_menu(device_names: list[str] | None = None,
 
 def global_mode(device_names: list[str] | None = None,
                 voices: list[str] | None = None,
-                pairs: list[str] | None = None) -> Node:
+                pairs: list[str] | None = None,
+                languages: list[str] | None = None) -> Node:
     return Node("Global", [
         Continuous("Master Tune", 0, -50, 50, formatter=cents),
         Continuous("Transpose", 0, -12, 12, unit="semitones", formatter=signed),
         Stepped("Velocity Curve", VELOCITY_CURVES, index=3),        # 4 — normal
-        accessibility_menu(device_names, voices, pairs),
+        accessibility_menu(device_names, voices, pairs, languages),
     ])
 
 
@@ -308,7 +310,8 @@ def global_mode(device_names: list[str] | None = None,
 
 def build_instrument(device_names: list[str] | None = None,
                      voices: list[str] | None = None,
-                     pairs: list[str] | None = None) -> list[Node]:
+                     pairs: list[str] | None = None,
+                     languages: list[str] | None = None) -> list[Node]:
     """
     The four top-level modes, in the order Tab cycles them.
 
@@ -320,5 +323,5 @@ def build_instrument(device_names: list[str] | None = None,
         program_mode(),
         combi_mode(),
         set_list_mode(),
-        global_mode(device_names, voices, pairs),
+        global_mode(device_names, voices, pairs, languages),
     ]

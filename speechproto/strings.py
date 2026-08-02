@@ -165,7 +165,30 @@ LANGUAGE_VOICES: dict[str, str] = {
     "Deutsch": "de",
 }
 
-LANGUAGES = list(STRINGS)
+#: Languages offered in the menu.
+#:
+#: **English only by default, deliberately.** The other tables below were not
+#: written by native speakers. They exist to prove the architecture — that
+#: changing language changes the words *and* the voice, and that no user-facing
+#: string is hardcoded in the announcement builder — and they are genuinely
+#: useful for demonstrating that point out loud.
+#:
+#: But shipping unreviewed wording as though it were finished is how a product
+#: ends up grating on exactly the users it was meant to serve, and a public
+#: repository is precisely where someone would copy it in good faith. So they
+#: are opt-in.
+#:
+#: Run with `--i18n-preview`, or set SPEECHPROTO_I18N=1, to enable them.
+#: Reviewed a language properly? Move it into REVIEWED and open a pull request.
+REVIEWED = ["English"]
+UNREVIEWED = [k for k in STRINGS if k not in REVIEWED]
+
+
+def available_languages(include_unreviewed: bool = False) -> list[str]:
+    return list(STRINGS) if include_unreviewed else list(REVIEWED)
+
+
+LANGUAGES = list(STRINGS)          # every table that exists, reviewed or not
 
 
 class Strings:

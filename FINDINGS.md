@@ -115,10 +115,11 @@ Kept because they are the useful part — each one is in `DESIGN.md §14`.
 1. **A hint spoken as a separate utterance interrupted the announcement it
    belonged to.** Every keypress cancels speech, including ours, so the user
    heard only "Press Enter to apply" and never the device name.
-2. **`step1.py` silently produced no audio** after the engine moved onto buses.
-   The espeak reader thread swallows exceptions, so it failed with no error and
-   no sound — exactly the failure mode this project exists to argue against,
-   sitting in its own repository.
+2. **A superseded second entry point silently produced no audio** after the
+   engine moved onto buses. The espeak reader thread swallows exceptions, so it
+   failed with no error and no sound — exactly the failure mode this project
+   exists to argue against, sitting in its own repository. It was fixed, then
+   deleted: a near-duplicate of the main program is a trap that will rot again.
 3. **A race on stream reopen.** Moving to a wider channel pair briefly left the
    old callback writing to a column that did not exist. PortAudio swallows the
    exception, so it would have appeared as a random dropout.

@@ -42,6 +42,7 @@ The Accessibility submenu under Global is live. Speech and earcons have
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 import threading
 import time
@@ -60,7 +61,7 @@ from speechproto.keys import Key, KeyReader
 from speechproto.navigation import Change, Event, Navigator
 from speechproto.params import Node
 from speechproto.speech import available_engines, create_engine
-from speechproto.strings import LANGUAGES, Strings
+from speechproto.strings import Strings, available_languages
 from speechproto.textentry import TextEditor
 from speechproto import wizard as wiz
 
@@ -81,8 +82,10 @@ DEFERRED = ("Speech Output", "Speech Width", "Speech Channels",
 
 
 class App:
-    def __init__(self, device: OutputDevice, engine_key: str, rate: int):
+    def __init__(self, device: OutputDevice, engine_key: str, rate: int,
+                 unreviewed_languages: bool = False):
         self.rate = rate
+        self.show_unreviewed_languages = unreviewed_languages
         self.strings = Strings("English")
 
         # One router owns every open device. Speech and earcons each get a bus,
@@ -115,6 +118,7 @@ class App:
             self.device_names,
             self.engine.available_voices(),
             audio_out.channel_options(device, True),
+            available_languages(self.show_unreviewed_languages),
         ))
 
         # Start the output settings on the device actually in use. A settings
@@ -792,7 +796,7 @@ def apply_setup(app: App, data: dict) -> None:
     """
     if not data:
         return
-    if data.get("language") in LANGUAGES:
+    if data.get("language") in available_languages(True):
         app.set_language(data["language"])
     if data.get("engine") in app.engines:
         app.engine_key = data["engine"]
@@ -831,6 +835,8 @@ def main() -> int:
                     help="also print each announcement as a line of text")
     ap.add_argument("--audition", action="store_true",
                     help="play the hands-free speech audition and exit")
+    ap.add_argument("--i18n-preview", action="store_true",
+                    help="offer the unreviewed sample translations (see strings.py)")
     ap.add_argument("--wizard", action="store_true",
                     help="run first-run setup again")
     ap.add_argument("--no-wizard", action="store_true",
@@ -861,7 +867,9 @@ def main() -> int:
 
     engine_key = args.engine or next(
         (k for k in ("espeak", "piper", "say") if k in available_engines()), "espeak")
-    app = App(device, engine_key, args.rate)
+    app = App(device, engine_key, args.rate,
+              unreviewed_languages=args.i18n_preview
+              or os.environ.get("SPEECHPROTO_I18N") == "1")
     app.verbosity = Verbosity.from_name(args.verbosity)
     app.earcons.spatial = Spatial.from_name(args.space)
     app.earcons.set_pack(args.pack)
