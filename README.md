@@ -1,23 +1,31 @@
 # A flagship keyboard that talks
 
-Not one flagship workstation on the market speaks. Not the Korg Kronos, not the
-Yamaha Montage, not the Roland Fantom, not the Nord Stage, not the Kurzweil
-K2700. A blind professional cannot operate any of them alone. Finding a sound
-requires a sighted person sitting next to you.
+**Everything needed to make a workstation speak already exists, and in most
+cases it is already inside the instrument.**
 
-Meanwhile Ableton shipped their **Move** groovebox with a screen reader, and a
-developer outside the company later put one directly on the device. A $449
+The Korg Kronos runs a real-time Linux kernel on an x86 processor with an SSD,
+with a separate ARM board driving the panel. Yamaha publishes GPL source for
+its synthesizers. Speech would be a userspace process on a CPU that already
+handles menus and file I/O — the synthesis engines are never touched. The
+speech engines themselves are free, tiny, and run comfortably on Raspberry
+Pi-class hardware.
+
+Ableton proved the rest of it. They shipped **Move** with a screen reader, and
+a developer outside the company later put one *directly on the device* by
+routing Ableton's existing accessibility data to a local voice. A $449
 groovebox does what no $4,000 flagship does.
 
-**The technical barrier is gone.** The Kronos runs a real-time Linux kernel on
-an x86 processor with an SSD, with a separate ARM board driving the panel and
-touchscreen. Speech would be a userspace process on a CPU that already handles
-menus and file I/O. The synthesis engines are never touched.
+So the hardware is not the obstacle, and neither is the software. What has
+never existed is an **interaction design** — a written account of how speech on
+an instrument should actually behave, precise enough to build from.
 
-What is missing is not silicon. It is a **product decision**, and more
-specifically an **interaction design nobody has written down.**
+That gap has a real cost today. No flagship workstation speaks: not the Kronos,
+not the Yamaha Montage, not the Roland Fantom, not the Nord Stage, not the
+Kurzweil K2700. A blind professional cannot find a sound on any of them without
+a sighted person sitting next to them.
 
-This repository is that design, written down — and running, so you can hear it.
+**This repository is that missing design** — written down, and running, so you
+can hear it rather than read about it.
 
 ---
 
