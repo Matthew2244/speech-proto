@@ -38,7 +38,7 @@ class Event(Enum):
     MODE = auto()         # switched Program/Combi/Set List/Global
     VALUE_LIMIT = auto()  # tried to push a value past its bound
     LIST_EDGE = auto()    # tried to move past the first or last sibling
-    READ_ONLY = auto()    # tried to change something that cannot be changed
+    READ_ONLY = auto()    # arrows cannot change this; Enter opens an editor
     NONE = auto()         # nothing happened; say nothing
 
 
@@ -362,9 +362,8 @@ class Navigator:
         if isinstance(item, Node):
             return Change(Event.NONE, before, before)
         if item.kind == "text":
-            # Silence would be indistinguishable from a broken key. Saying so
-            # once is cheaper than the user pressing it four more times to find
-            # out whether the instrument heard them.
+            # Silence would be indistinguishable from a broken key. Point at
+            # the key that does work instead — see textentry.py.
             return Change(Event.READ_ONLY, before, before)
         if not item.nudge(steps):
             # Already at the edge. The value did not move, but the user asked,

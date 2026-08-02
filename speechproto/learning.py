@@ -94,7 +94,7 @@ class Learning:
             Event.LIST_EDGE: "end of list",
             Event.DESCENDED: "entering",
             Event.ASCENDED: "leaving",
-            Event.READ_ONLY: "not editable",
+            Event.READ_ONLY: "text field",
         }.get(ev)
         if ev is Event.VALUE and after.kind == "toggle":
             sound = "toggle"
@@ -108,7 +108,7 @@ class Learning:
             if after.kind == "toggle" and self._still_teaching("key:toggle"):
                 return "Right to switch"
             if after.kind == "text" and self._still_teaching("key:text"):
-                return s("read_only")
+                return s("edit_hint")
             if after.kind in ("continuous", "stepped") and self._still_teaching("key:value"):
                 return "Left and Right to change"
         return ""

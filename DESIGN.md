@@ -122,7 +122,7 @@ place. Returning `""` — silence — is a valid and frequent answer.
 | Run off a list end | *(silence)* | *(silence)* | *(silence)* |
 | Toggle | `on` | `Mute, on` | `Mute, on` |
 | Change mode | `Combi` | `Combi, Name, Piano Pad Split` | `Combi, item 1 of 4, Name, …` |
-| Read-only field | *(silence)* | `Read only` | `Read only` |
+| Free-text field | *(silence)* | `Press Enter to edit` | `Press Enter to edit` |
 
 **Terse and Normal are identical for the two most frequent actions.** This is
 deliberate and is the heart of the verbosity model:
@@ -500,6 +500,42 @@ Support at least **400 words per minute.** Blind users run screen readers far
 faster than sighted people expect, and a ceiling of 200 makes the feature
 useless to exactly the people who most need it. This reliably surprises sighted
 audiences in a demo, which is itself worth showing.
+
+---
+
+## 10.6 Text entry without a screen
+
+Naming a program is the one place the rules in §4 stop helping, because there
+is no "next value" to arrow to.
+
+A sighted user sees the whole string, the cursor within it, and every change as
+it happens. Take the screen away and all three vanish at once, so each has to
+be handed back deliberately:
+
+- **Echo every character as it is inserted.** Otherwise you are typing into a
+  void and find out about the mistake at the end.
+- **Say the character you land on when moving**, and say `end` when there is
+  nothing there. Position is otherwise unknowable.
+- **Backspace announces what was deleted**, not what is now adjacent. This is
+  the one everybody gets backwards. You pressed a key to remove a character;
+  the useful information is which character went.
+- **Speak punctuation and whitespace by name.** A space is silence, and silence
+  is indistinguishable from nothing having happened. `space`, `dash`, `period`.
+  Announce capitals as `cap b` — most voices do not distinguish case.
+- **Offer spell-back.** A wrong letter inside a name that still sounds right —
+  `Grand` against `Grnad` — is invisible to any amount of reading aloud. One
+  key that spells the buffer out catches it.
+- **Escape restores the original exactly.** Losing a patch name you have used
+  for years to a mistyped character, with no way back, is how people learn
+  never to edit anything again.
+
+**Committing reads the whole string back.** It is the only moment where reading
+everything is correct, because it is the moment you are checking your work —
+the exception that proves §1 rather than breaking it.
+
+Entry is **modal**: while editing, letter keys insert letters and cannot also
+be shortcuts. Anything else gives you an editor that changes settings at random
+while you type a name.
 
 ---
 

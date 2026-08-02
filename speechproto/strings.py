@@ -14,7 +14,8 @@ Real multilingual support is two separate things:
     1. **Pronunciation** — a voice for that language. espeak-ng ships over a
        hundred, so this part is nearly free.
     2. **The words themselves** — every framing word the announcement builder
-       produces: maximum, minimum, item, of, submenu, parameters, read only.
+       produces: maximum, minimum, item, of, submenu, parameters, and the
+       prompts like "Press Enter to edit".
        This part is not free, and it is the part that gets skipped.
 
 So the rule this file enforces is: **no literal user-facing string anywhere in
@@ -56,7 +57,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "value": "value",
         "range": "range",
         "to": "to",
-        "read_only": "Read only",
+        "edit_hint": "Press Enter to edit",
         "on": "on",
         "off": "off",
         "ready": "Ready",
@@ -83,7 +84,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "value": "valor",
         "range": "rango",
         "to": "a",
-        "read_only": "Solo lectura",
+        "edit_hint": "Pulsa Intro para editar",
         "on": "activado",
         "off": "desactivado",
         "ready": "Listo",
@@ -109,7 +110,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "value": "valeur",
         "range": "plage",
         "to": "à",
-        "read_only": "Lecture seule",
+        "edit_hint": "Appuyez sur Entrée pour modifier",
         "on": "activé",
         "off": "désactivé",
         "ready": "Prêt",
@@ -135,7 +136,7 @@ STRINGS: dict[str, dict[str, str]] = {
         "value": "Wert",
         "range": "Bereich",
         "to": "bis",
-        "read_only": "Nur lesen",
+        "edit_hint": "Eingabetaste zum Bearbeiten",
         "on": "ein",
         "off": "aus",
         "ready": "Bereit",

@@ -213,10 +213,11 @@ def build_announcement(change: Change, verbosity: Verbosity,
     if after is None or ev in (Event.NONE, Event.LIST_EDGE):
         return ""
 
-    # Something that cannot be changed. Say so once — at TERSE the refusal
+    # A free-text field: arrows cannot change it, but Enter opens an editor.
+    # Say what WILL work rather than only what will not — at TERSE the refusal
     # tone alone is the answer, which is what TERSE is for.
     if ev is Event.READ_ONLY:
-        return "" if verbosity is Verbosity.TERSE else s("read_only")
+        return "" if verbosity is Verbosity.TERSE else s("edit_hint")
 
     # ---------------------------------------------------------------- #
     # A value was pushed against its limit. Unlike a list edge, something IS

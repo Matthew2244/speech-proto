@@ -23,6 +23,7 @@ Keys
   p ................. cycle earcon pack: Sine, Marimba, Glass, Pulse, Air
   w ................. where am I — always speaks, even with speech switched off
   b ................. toggle the simulated braille line
+  Enter (on a name) . edit the text, character by character
   1 2 3 4 ........... run a long operation: save, load, backup, update
   x ................. cancel a running operation
   a ................. hands-free audition of the speech engines
@@ -59,6 +60,7 @@ from speechproto.navigation import Change, Event, Navigator
 from speechproto.params import Node
 from speechproto.speech import available_engines, create_engine
 from speechproto.strings import LANGUAGES, Strings
+from speechproto.textentry import TextEditor
 from speechproto import wizard as wiz
 
 COARSE = 10  # Shift multiplier for value changes
@@ -458,7 +460,7 @@ class App:
 
 
     # ------------------------------------------------------------------ #
-    def handle(self, k: Key) -> None:
+    def handle(self, k: Key, reader=None) -> None:
         # Silence first, and it says nothing back. A silence key that announces
         # itself is not a silence key.
         if k.name == keys.SILENCE:
@@ -496,6 +498,11 @@ class App:
             change = nav.adjust(-step) if on_leaf else nav.ascend()
         elif k.name == keys.ENTER:
             if self.apply_deferred():
+                return
+            focused = nav.focused()
+            if not isinstance(focused, Node) and focused.kind == "text" and reader:
+                if TextEditor(self, focused).run(reader):
+                    self._sync_settings()
                 return
             change = nav.descend()
         elif k.name == keys.ESCAPE:
@@ -889,7 +896,7 @@ def main() -> int:
                 k = reader.read()
                 if k is None:
                     continue
-                app.handle(k)
+                app.handle(k, reader)
             app.power_off()
     except KeyboardInterrupt:
         pass

@@ -158,9 +158,10 @@ def test_limits_differ() -> None:
 def test_read_only_and_where_am_i() -> None:
     nav = Navigator(build_instrument(["Test Device"]))
     ro = nav.adjust(1)                           # "Name" is a text field
-    check("§14.8 read-only is its own event", ro.event, Event.READ_ONLY)
-    check("read-only, Terse is the tone alone", build_announcement(ro, T), "")
-    check("read-only, Normal speaks", build_announcement(ro, N), "Read only")
+    check("§14.8 a text field is its own event", ro.event, Event.READ_ONLY)
+    check("text field, Terse is the tone alone", build_announcement(ro, T), "")
+    check("text field, Normal points at the key that works",
+          build_announcement(ro, N), "Press Enter to edit")
 
     nav = Navigator(build_instrument(["Test Device"]))
     check("§4.5 where-am-I gives full context",
