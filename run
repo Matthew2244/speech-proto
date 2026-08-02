@@ -1,0 +1,4 @@
+#!/bin/sh
+# Launcher — uses the project venv so you never have to think about it.
+cd "$(dirname "$0")"
+exec ./.venv/bin/python proto.py "$@"

@@ -1,0 +1,4 @@
+# Optional: the Piper speech engine. MIT licensed, neural voices, and the
+# engine most likely to be acceptable to a manufacturer — see NOTICE.
+# Voice models are downloaded separately into ./voices/ ; see README.
+piper-tts>=1.6.0

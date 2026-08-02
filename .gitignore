@@ -1,0 +1,16 @@
+# Virtual environment — 172 MB, and everyone's is different.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Piper voice models. ~63 MB each, and they are downloads, not source.
+# See README for how to fetch one:
+#   python -m piper.download_voices en_US-lessac-medium
+voices/*.onnx
+voices/*.onnx.json
+
+# Saved first-run answers. Machine-specific — device names, chosen voice.
+.speech-proto.json
+
+.DS_Store

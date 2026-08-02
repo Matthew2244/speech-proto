@@ -1,0 +1,3 @@
+# The only hard dependencies. Everything else is standard library.
+numpy>=1.24
+sounddevice>=0.4.6
