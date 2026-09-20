@@ -122,12 +122,6 @@ class App:
             available_languages(self.show_unreviewed_languages),
         ))
 
-        # Start the output settings on the device actually in use. A settings
-        # screen that opens showing something other than the truth is worse
-        # than one showing nothing: it invites you to "change" to the device you
-        # are already on, and to trust it about everything else.
-        self._sync_settings()
-
         self.speech_enabled = True
         self.verbosity = Verbosity.NORMAL
         self.show_braille = False
@@ -137,6 +131,13 @@ class App:
         self.learning = Learning(self)
         self.metronome = Metronome(self)
         self.running = True
+
+        # Start the settings screen on what is actually happening. A settings
+        # screen that opens showing something other than the truth is worse
+        # than one showing nothing: it invites you to "change" to the device you
+        # are already on, and to trust it about everything else. Runs after
+        # every state attribute above exists, because it reads them all.
+        self._sync_settings()
 
         # Started last, deliberately: a watchdog that runs while the object it
         # watches is still being built will read half of it.
@@ -344,6 +345,39 @@ class App:
             elif param is not None:
                 param.index = 0
 
+        # The immediate rows need the same honesty. The wizard and a restored
+        # setup change the live state directly — set_rate, set_voice, gains —
+        # and without this the settings screen keeps showing the values the
+        # tree was BUILT with. Found the obvious way: pick 400 words a minute
+        # in the wizard, open the settings, be told 300.
+        def stepped(name: str, value: str, options: list[str] | None = None):
+            param = acc.find(name)
+            if param is None:
+                return
+            if options:
+                param.options = options
+            if value in param.options:
+                param.index = param.options.index(value)
+
+        def plain(name: str, value):
+            param = acc.find(name)
+            if param is not None:
+                param.value = value
+
+        stepped("Language", self.strings.language)
+        stepped("Verbosity", self.verbosity.label)
+        stepped("Speech Engine",
+                {"espeak": "espeak-ng", "piper": "Piper",
+                 "say": "macOS say"}.get(self.engine_key, "espeak-ng"))
+        stepped("Voice", self.engine.voice,
+                self.engine.available_voices() or ["Default"])
+        plain("Speech", self.speech_enabled)
+        plain("Speech Rate", self.rate)
+        plain("Speech Volume", round(self.router.gain(SPEECH) * 100))
+        plain("Earcons", self.earcons.enabled)
+        plain("Earcon Volume", round(self.router.gain(EARCON) * 100))
+        plain("Learning Mode", self.learning.enabled)
+
     def refresh_buses(self) -> None:
         """
         Hand out fresh Bus objects after a level or routing change.
@@ -506,9 +540,15 @@ class App:
             if self.apply_deferred():
                 return
             focused = nav.focused()
-            if not isinstance(focused, Node) and focused.kind == "text" and reader:
-                if TextEditor(self, focused).run(reader):
-                    self._sync_settings()
+            if not isinstance(focused, Node):
+                if focused.kind == "text" and reader:
+                    if TextEditor(self, focused).run(reader):
+                        self._sync_settings()
+                    return
+                # Enter on a plain value has no meaning — but dead silence
+                # reads as a dead key, or a dead instrument. Same shape of
+                # answer as every other refusal: you asked, nothing moved.
+                self.earcons.limit(False)
                 return
             change = nav.descend()
         elif k.name == keys.ESCAPE:
@@ -587,13 +627,29 @@ class App:
             run_audition(self)
             return
         elif k.char == "?":
+            # The complete list, not a sampler. For a blind user this key is
+            # the only discoverability there is: any key it leaves out may as
+            # well not exist. It is long, and that is fine — speech is
+            # interruptible, and a reference that stops short teaches you to
+            # stop trusting it. Short sentences, most-used first.
             self.say(
                 "Arrows navigate. Right enters or raises, left leaves or lowers. "
-                "Escape always leaves. Page keys jump to the same parameter in the "
-                "next submenu. Tab changes mode. V changes verbosity. "
-                "S changes earcon space. W says where you are. "
-                "Keys one to four run a long operation. "
-                "Control Space silences. Q quits.",
+                "Escape always leaves. Enter enters a submenu. "
+                "On a name, Enter edits it. "
+                "Plus and minus also change a value. "
+                "Hold shift with an arrow for ten at a time. "
+                "On a value, Home and End go to minimum and maximum. "
+                "On a menu, they go to first and last. "
+                "Page keys jump to the same parameter in the next submenu. "
+                "Tab changes mode. W says where you are. "
+                "V changes verbosity. B toggles the braille line. "
+                "S changes earcon space. P changes earcon pack. "
+                "L is learning mode, which names each sound until you know it. "
+                "K plays the whole sound vocabulary. "
+                "Keys one to four run a long operation. X cancels it. "
+                "M is the metronome. A auditions the speech engines. "
+                "Control Space silences. Question mark repeats this list. "
+                "Q quits.",
                 force=True,
             )
             return

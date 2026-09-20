@@ -96,6 +96,19 @@ class KeyReader:
         data = os.read(self._fd, 1)
         return data[0] if data else None
 
+    def poll(self, timeout: float) -> Key | None:
+        """
+        Return a keypress if one arrives within `timeout` seconds, else None.
+
+        Exists so a long prompt can watch for keys *while it is still being
+        spoken*. Waiting for speech to finish before reading input queues the
+        user's keys against prompts they have not heard yet — the answers
+        drift one question out of step, silently, which in the setup wizard
+        can accept an output the user never chose.
+        """
+        r, _, _ = select.select([self._fd], [], [], timeout)
+        return self.read() if r else None
+
     def read(self) -> Key | None:
         """Block for one keypress and return it."""
         b = self._read_byte()

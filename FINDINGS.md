@@ -157,3 +157,31 @@ _(fill in as you test)_
 -
 - Anything that made you want to switch it off?
 -
+
+---
+
+## Session notes — Faith, dogfooding 2026-09-20
+
+Used the whole surface end to end (wizard, tree, text editor, operations,
+deferred routing with revert, learning mode, help key). Three bugs found and
+fixed the same day — wizard keystrokes queuing against unheard prompts, the
+settings screen showing built-with values instead of live ones, Enter on a
+plain value answering with dead silence. Details in the commit messages.
+
+Two things that are **design questions, not bugs** — Matthew's call:
+
+- **The End key got me twice in one session.** Standing on a value while
+  meaning to jump to the last menu item, End silently set Master Tune to
+  +50 cents. Both times the announcement said so, and both times I had
+  already moved on before it registered. On a value, Home/End are range
+  jumps; on a submenu, list jumps — the overload reads fine on paper and
+  cost me a quarter-tone detune twice in an hour of real use. Maybe that is
+  a me problem; maybe range jumps should cost more than one unmodified
+  keypress on a stage instrument. Worth judging by hand, not by argument.
+
+- **The volume rows now report the truth, and the truth is 100 percent.**
+  Speech Volume and Earcon Volume used to display 85 and 60 while the
+  router's actual gain was 1.0 — the numbers were the tree's built-in
+  defaults and nothing ever set them. Synced rows now show 100. If 85/60
+  were meant as real defaults, the fix belongs in the router's starting
+  gains, not the display.

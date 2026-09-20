@@ -46,6 +46,7 @@ import time
 
 from . import audio_out, keys
 from .announce import Verbosity
+from .keys import Key
 from .earcons import PACK_NAMES, PACKS, Spatial
 from .strings import LANGUAGES, Strings
 
@@ -94,13 +95,28 @@ class Wizard:
         self.cancelled = False
 
     # ------------------------------------------------------------------ #
-    def _speak_and_wait(self, text: str, timeout: float = 6.0) -> None:
-        """Say something and let it finish — a prompt talked over is not a prompt."""
+    def _speak_and_wait(self, text: str, timeout: float = 6.0) -> Key | None:
+        """
+        Say something and let it finish — unless a key interrupts it.
+
+        Returns the interrupting key, or None if the prompt played out. The
+        caller must treat that key as the answer to THIS question. The first
+        version of this method read no input until speech ended, so keys
+        pressed during a prompt queued up against questions the user had not
+        heard yet — every answer landed one question late, and in the hearing
+        check that accepted an output the user never chose. Interruption is
+        the rule everywhere else in this prototype; the wizard does not get
+        an exemption just because it speaks in paragraphs.
+        """
         self.app.say(text, force=True)
         deadline = time.monotonic() + timeout
         time.sleep(0.1)
         while self.app.engine.is_speaking() and time.monotonic() < deadline:
-            time.sleep(0.02)
+            k = self.reader.poll(0.03)
+            if k is not None:
+                self.app.engine.stop()
+                return k
+        return None
 
     def choose(self, prompt: str, options: list[str], current: int,
                preview=None) -> int | None:
@@ -111,11 +127,12 @@ class Wizard:
         settings where the name means nothing without the sound.
         """
         idx = max(0, min(current, len(options) - 1))
-        self._speak_and_wait(f"{prompt} {options[idx]}.")
-        self.app.say("Up and down to choose. Enter to accept.", force=True)
+        k = self._speak_and_wait(
+            f"{prompt} {options[idx]}. Up and down to choose. Enter to accept.")
 
         while True:
-            k = self.reader.read()
+            if k is None:
+                k = self.reader.read()
             if k is None:
                 continue
             if k.name == keys.SILENCE:
@@ -135,6 +152,7 @@ class Wizard:
                         preview(options[idx])
                 else:
                     self.app.earcons.limit(idx > 0)
+            k = None
 
     # ------------------------------------------------------------------ #
     def hearing_check(self) -> bool:
@@ -156,13 +174,14 @@ class Wizard:
             self.app.route(audio_out.SPEECH, device)
             self.app.route(audio_out.EARCON, device)
             self.app.earcons.power(True)
-            self._speak_and_wait(
+            k = self._speak_and_wait(
                 f"Setup. Can you hear this? This is {device.name}. "
                 f"Press Enter to use it, or press the space bar to try the next output.",
                 timeout=10.0,
             )
             while True:
-                k = self.reader.read()
+                if k is None:
+                    k = self.reader.read()
                 if k is None:
                     continue
                 if k.name == keys.ENTER:
@@ -174,6 +193,7 @@ class Wizard:
                     return False
                 if k.name == keys.SILENCE:
                     self.app.engine.stop()
+                k = None
         return True
 
     # ------------------------------------------------------------------ #
