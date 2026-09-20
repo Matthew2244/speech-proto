@@ -53,6 +53,7 @@ from speechproto.announce import Verbosity, braille_line, build_announcement
 from speechproto.audio_out import EARCON, NOTE, SPEECH, OutputDevice, Router
 from speechproto.audition import run_audition
 from speechproto.confirm import PendingChange
+from speechproto.demo import run_demo
 from speechproto.earcons import PACK_NAMES, PACKS, Earcons, Spatial
 from speechproto.instrument import SPATIAL_MODES, build_instrument
 from speechproto.learning import Learning
@@ -835,6 +836,9 @@ def main() -> int:
                     help="also print each announcement as a line of text")
     ap.add_argument("--audition", action="store_true",
                     help="play the hands-free speech audition and exit")
+    ap.add_argument("--demo", action="store_true",
+                    help="play the two-minute walkthrough — one path at all "
+                         "three verbosity levels — and exit")
     ap.add_argument("--i18n-preview", action="store_true",
                     help="offer the unreviewed sample translations (see strings.py)")
     ap.add_argument("--wizard", action="store_true",
@@ -880,6 +884,17 @@ def main() -> int:
         time.sleep(3.0)
         try:
             run_audition(app)
+        finally:
+            app.close()
+        return 0
+
+    if args.demo:
+        # No pool warm-up: the demo speaks through the selected engine only,
+        # and the default engine is ready the moment it is constructed.
+        try:
+            run_demo(app)
+        except KeyboardInterrupt:
+            print("\nDemo stopped.", flush=True)
         finally:
             app.close()
         return 0

@@ -12,9 +12,12 @@ by memory:
        not a queue draining behind it.
     3. Interrupting a long sentence mid-word.
 
-This is an early slice of the `--demo` flag promised in step 7. That one will
-walk a navigation path at all three verbosity levels; this one only has speech
-and interruption to show, because that is all step 1 built.
+`demo.py` is this file's grown-up sibling: that one walks a navigation path
+at all three verbosity levels to demonstrate the announcement *design*; this
+one compares speech *engines*, because that is all step 1 had built when it
+was written. They stay separate because they answer different questions —
+"can it interrupt fast enough" is for an engineer, "what should it say" is
+for whoever owns the product.
 """
 
 from __future__ import annotations

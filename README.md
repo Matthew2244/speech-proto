@@ -156,10 +156,17 @@ cd voices && ../.venv/bin/python -m piper.download_voices en_US-lessac-medium
 
 Useful flags: `--device "name"`, `--engine espeak|piper|say`, `--rate 400`,
 `--verbosity terse|normal|verbose`, `--space mono|stereo|binaural`,
-`--braille`, `--audition`, `--wizard`.
+`--braille`, `--audition`, `--demo`, `--wizard`.
+
+`--demo` plays the whole argument by ear in about two minutes, hands-free:
+one walk through a Combi at all three verbosity levels, then a held-key
+burst. Nothing in it is scripted speech — every announcement is generated
+live by feeding keystrokes through the same code path real keys take, so the
+demo can never drift from what the prototype actually does. Start here when
+showing this to someone who owns a product.
 
 `--audition` plays a hands-free comparison of the speech engines. Useful when
-demonstrating to someone who does not know the keys.
+the question is latency and interruption rather than what gets said.
 
 ---
 
